@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-nginx-conf
+data:
+  default.conf: |
+    server {
+      listen 80;
+
+      # Serve the frontend (single-page app)
+      location / {
+        root /usr/share/nginx/html;
+        try_files $uri /index.html;
+      }
+
+      # Forward API calls to the backend ClusterIP service (strips /api)
+      location /api/ {
+        proxy_pass http://simplybyte-backend:8090/;
+      }
+    }

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simplybyte-frontend
+  labels:
+    app: simplybyte-frontend
+spec:
+  # replicas is managed by the HorizontalPodAutoscaler (hpa.yml)
+  selector:
+    matchLabels:
+      app: simplybyte-frontend
+  template:
+    metadata:
+      labels:
+        app: simplybyte-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: simplybyte/simplybyte-ui:3.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/nginx/html/src/assets/config.json
+              subPath: config.json
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+      volumes:
+        - name: config
+          configMap:
+            name: simplybyte-frontend-config
+        - name: nginx-conf
+          configMap:
+            name: frontend-nginx-conf

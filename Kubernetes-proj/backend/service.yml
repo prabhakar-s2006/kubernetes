@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simplybyte-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: simplybyte-backend
+  ports:
+    - port: 8090
+      targetPort: 8090
+      protocol: TCP
